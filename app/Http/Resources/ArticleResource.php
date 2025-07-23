@@ -19,7 +19,7 @@ class ArticleResource extends JsonResource
             'title' => $this->title,
             'content'=>$this->content,
             'slug'=>$this->slug,
-            'user_id'=>$this->user_id
+            'user_id'=> new UserResource($this->user)
         ];
     }
 }
