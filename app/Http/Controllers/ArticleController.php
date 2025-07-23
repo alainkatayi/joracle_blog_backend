@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class ArticleController extends Controller
 {
     public function index(){
-        $article = Article::all();
+        $article = Article::with('user')->paginate(12);
         return ArticleResource::collection($article);
     }
 
@@ -33,7 +33,7 @@ class ArticleController extends Controller
                     "Message"=>"Vous n'avez pas le droit de creer un Article"
                 ],403);
             }
-            
+
             //on passe par la validation
             $validator =  Validator::make($request->all(),[
                 'title'=>'required|string|max:50',
@@ -63,6 +63,11 @@ class ArticleController extends Controller
                 $exception->getMessage()
             ]);
         }
+    }
+
+    public function show(int $id){
+        $article = Article::findOrFail($id);
+        return new ArticleResource($article);
     }
 
 }
