@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -50,6 +51,44 @@ class AuthController extends Controller
         //casd'erreur
         catch(\Exception $exception){
             return response()-> json(['error' => $exception -> getMessage() ]);
+        }
+    }
+    
+    //function pour la connexion d'un utilisateur
+    public function login(Request $request){
+
+        $validationData = Validator::make($request ->all(),[
+            'email' => 'required | string |email',
+            'password' => 'required | string'
+        ]);
+
+        if ($validationData -> fails()){
+            return response()-> json($validationData -> errors(), 403);
+        }
+        $credenstials = ['email' => $request -> email, 'password' => $request -> password];
+        
+        try{
+            if(!auth()->attempt($credenstials)){
+                return response() -> json([
+                    'error' => "Email ou Mot de passe  incorrect  "
+                ], 400);
+            }
+
+            $user = User::where('email', $request -> email)->firstOrFail();
+            $token = $user -> createToken('token') -> plainTextToken;
+            $user['token'] = $token;
+
+            return response() -> json([
+                'Message' => 'Connexion réussi',
+                'User' => $user
+            ], 201);
+        }
+        catch(\Exception $exception){
+            return response()-> json([
+                'error' => [
+                    $exception -> getMessage()
+                ]
+                ], 500);
         }
     }
 }
