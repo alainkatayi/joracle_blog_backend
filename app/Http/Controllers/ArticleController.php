@@ -110,4 +110,18 @@ class ArticleController extends Controller
         }
     }
 
+    public function destroy($id){
+        $article = Article::findOrFail($id);
+        if(auth()->user()->id !== $article ->user_id){
+            return response()->json([
+                "Error"=>"Vous n'avez pas le droit de supprimer cet article"
+            ],403);
+        }else{
+            $article->delete();
+            return response()->json([
+                "Message"=>"Article supprimé"
+            ]);
+        }
+    }
+
 }
