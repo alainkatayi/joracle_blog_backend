@@ -9,7 +9,7 @@ class Article extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'title', 'content', 'slug','user_id','created_at'
+        'title', 'content', 'slug','user_id','created_at','photo'
     ];
     public function user()
 {
