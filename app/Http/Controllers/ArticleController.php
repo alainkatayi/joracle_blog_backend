@@ -40,8 +40,13 @@ class ArticleController extends Controller
             $validator =  Validator::make($request->all(),[
                 'title'=>'required|string|max:50',
                 'content'=> 'required|string',
-                'slug'=>'required|string'
+                'slug'=>'required|string',
+                'photo' => 'required|mimes:jpg,jpeg,png,gif|max:2048'
             ]);
+            if ($request->hasFile('photo')) {
+                $filename = time() . '_' . $request->file('photo')->getClientOriginalName();
+                $path = $request->file('photo')->storeAs('article', $filename, 'public');
+            }
 
             //si la validatio echoue
             if($validator->fails()){
@@ -55,6 +60,7 @@ class ArticleController extends Controller
                 'title'=>$request->title,
                 'content'=>$request->content,
                 'slug'=>$request->slug,
+                'photo'=>$path,
                 'user_id'=>$user->id
             ]);
 
@@ -65,7 +71,9 @@ class ArticleController extends Controller
                 $exception->getMessage()
             ]);
         }
+    
     }
+
 
     public function show(int $id){
         $article = Article::findOrFail($id);
