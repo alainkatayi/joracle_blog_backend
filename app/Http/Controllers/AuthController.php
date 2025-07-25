@@ -74,14 +74,11 @@ class AuthController extends Controller
                 ], 400);
             }
 
-            $user = User::where('email', $request -> email)->firstOrFail();
+            $user = User::where('email', $request -> email)->first();
             $token = $user -> createToken('token') -> plainTextToken;
             $user['token'] = $token;
 
-            return response() -> json([
-                'Message' => 'Connexion réussi',
-                'User' => $user
-            ], 201);
+            return response() -> json($user);
         }
         catch(\Exception $exception){
             return response()-> json([

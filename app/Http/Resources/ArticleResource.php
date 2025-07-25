@@ -21,7 +21,8 @@ class ArticleResource extends JsonResource
             'title' => $this->title,
             'content'=>$this->content,
             'slug'=>$this->slug,
-            'created_at'=>Carbon::parse($this->created_at),
+            'photo'=>$this->photo,
+            'created_at'=>Carbon::parse($this->created_at)->diffForHumans(),
             'user_id'=> new UserResource($this->user)
         ];
     }
