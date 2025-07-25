@@ -77,7 +77,7 @@ class ArticleController extends Controller
 
     public function show(int $id){
         $article = Article::findOrFail($id);
-        return new ArticleResource($article);
+        return response()->json($article);
     }
 
     //méthode pour la mise à jour d'un Article
